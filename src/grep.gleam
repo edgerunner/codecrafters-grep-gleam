@@ -11,18 +11,18 @@ pub fn main() {
   let assert Ok(input_line) = erlang.get_line("")
 
   // Uncomment this to pass the first stage
-  // case args {
-  //   ["-E", pattern, ..] -> {
-  //     case match_pattern(input_line, pattern) {
-  //       True -> exit(0)
-  //       False -> exit(1)
-  //     }
-  //   }
-  //   _ -> {
-  //     io.println("Expected first argument to be '-E'")
-  //     exit(1)
-  //   }
-  // }
+  case args {
+    ["-E", pattern, ..] -> {
+      case match_pattern(input_line, pattern) {
+        True -> exit(0)
+        False -> exit(1)
+      }
+    }
+    _ -> {
+      io.println("Expected first argument to be '-E'")
+      exit(1)
+    }
+  }
 }
 
 fn match_pattern(input_line: String, pattern: String) -> Bool {

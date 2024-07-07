@@ -1,0 +1,7 @@
+---
+version: 1.1.7
+title: Lex the literal character s
+file: ./test/grep/lexer_test.gleam
+test_name: lex_literal_character_test
+---
+[Literal("s")]

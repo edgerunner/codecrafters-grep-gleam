@@ -1,0 +1,12 @@
+---
+version: 1.1.7
+title: Lex literals and digits
+file: ./test/grep/lexer_test.gleam
+test_name: lex_literals_and_digits_test
+---
+[
+  Literal("R"),
+  Digit,
+  Literal("D"),
+  Digit,
+]

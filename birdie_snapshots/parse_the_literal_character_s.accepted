@@ -1,0 +1,7 @@
+---
+version: 1.1.7
+title: Parse the literal character s
+file: ./test/grep/parser_test.gleam
+test_name: parse_literal_character_test
+---
+Literal("s", Match)

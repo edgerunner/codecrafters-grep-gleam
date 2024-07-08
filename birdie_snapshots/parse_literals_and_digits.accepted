@@ -1,0 +1,10 @@
+---
+version: 1.1.7
+title: Parse literals and digits
+file: ./test/grep/parser_test.gleam
+test_name: parse_literals_and_digits_test
+---
+Literal(
+  "R",
+  Digit(Literal("D", Digit(Match))),
+)

@@ -19,6 +19,14 @@ pub fn bad_no_match_a_test() {
   snap_no_match(string: "bad", pattern: "a")
 }
 
+pub fn digit_2_match_test() {
+  snap_match(string: "2", pattern: "\\d")
+}
+
+pub fn digit_q_no_match_test() {
+  snap_no_match(string: "q", pattern: "\\d")
+}
+
 fn snap_match(string string, pattern pattern) {
   parser.parse(pattern)
   |> evaluator.evaluate(string, _)

@@ -27,6 +27,22 @@ pub fn digit_q_no_match_test() {
   snap_no_match(string: "q", pattern: "\\d")
 }
 
+pub fn word_2_match_test() {
+  snap_match(string: "2", pattern: "\\w")
+}
+
+pub fn word_q_match_test() {
+  snap_match(string: "q", pattern: "\\w")
+}
+
+pub fn word_capital_s_match_test() {
+  snap_match(string: "S", pattern: "\\w")
+}
+
+pub fn word_star_no_match_test() {
+  snap_no_match(string: "*", pattern: "\\w")
+}
+
 fn snap_match(string string, pattern pattern) {
   parser.parse(pattern)
   |> evaluator.evaluate(string, _)

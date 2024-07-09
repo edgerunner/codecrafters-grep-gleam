@@ -1,6 +1,7 @@
 import gleam/int
 import gleam/iterator
 import gleam/list
+import gleam/string
 import grep/lexer
 
 pub type Grep {
@@ -18,7 +19,7 @@ pub fn parse(source: String) -> Grep {
     case token {
       lexer.Literal(s) -> Literal(s, grep)
       lexer.Digit -> digit(grep)
-      lexer.Word -> todo
+      lexer.Word -> word(grep)
     }
   }
   |> reverse(Match)
@@ -32,9 +33,32 @@ fn reverse(grep: Grep, reversed: Grep) -> Grep {
   }
 }
 
+fn word(next: Grep) -> Grep {
+  [alpha_upper(Match), alpha_lower(Match), digit(Match)]
+  |> OneOf(next)
+}
+
 fn digit(next: Grep) -> Grep {
   list.range(from: 0, to: 9)
   |> list.map(int.to_string)
+  |> list.map(Literal(_, Match))
+  |> OneOf(next)
+}
+
+fn alpha_upper(next: Grep) -> Grep {
+  list.range(from: 65, to: 90)
+  |> list.filter_map(string.utf_codepoint)
+  |> string.from_utf_codepoints
+  |> string.to_graphemes
+  |> list.map(Literal(_, Match))
+  |> OneOf(next)
+}
+
+fn alpha_lower(next: Grep) -> Grep {
+  list.range(from: 97, to: 122)
+  |> list.filter_map(string.utf_codepoint)
+  |> string.from_utf_codepoints
+  |> string.to_graphemes
   |> list.map(Literal(_, Match))
   |> OneOf(next)
 }

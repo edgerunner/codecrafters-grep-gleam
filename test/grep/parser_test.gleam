@@ -25,3 +25,15 @@ pub fn parse_literals_and_digits_test() {
   |> pprint.format
   |> birdie.snap("Parse literals and digits")
 }
+
+pub fn parse_single_word_class_test() {
+  parser.parse("\\w")
+  |> pprint.format
+  |> birdie.snap("Parse single word class")
+}
+
+pub fn parse_literals_and_classes_test() {
+  parser.parse("R\\d\\w2")
+  |> pprint.format
+  |> birdie.snap("Parse literals and classes: R\\d\\w2")
+}

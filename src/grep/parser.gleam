@@ -18,6 +18,7 @@ pub fn parse(source: String) -> Grep {
     case token {
       lexer.Literal(s) -> Literal(s, grep)
       lexer.Digit -> digit(grep)
+      lexer.Word -> todo
     }
   }
   |> reverse(Match)

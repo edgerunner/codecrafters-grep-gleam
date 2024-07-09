@@ -4,6 +4,7 @@ import gleam/string
 pub type Token {
   Literal(String)
   Digit
+  Word
 }
 
 pub fn lex(source: String) -> Iterator(Token) {
@@ -12,6 +13,7 @@ pub fn lex(source: String) -> Iterator(Token) {
     case state, grapheme {
       _, "\\" -> Error("\\")
       Error("\\"), "d" -> Ok(Digit)
+      Error("\\"), "w" -> Ok(Word)
       _, _ -> Ok(Literal(grapheme))
     }
   })

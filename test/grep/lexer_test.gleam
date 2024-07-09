@@ -30,3 +30,17 @@ pub fn lex_literals_and_digits_test() {
   |> pprint.format
   |> birdie.snap("Lex literals and digits")
 }
+
+pub fn lex_word_class_test() {
+  lexer.lex("\\w")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex word class")
+}
+
+pub fn lex_literals_and_classes_test() {
+  lexer.lex("R\\d\\w\\d")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex literals and classes")
+}

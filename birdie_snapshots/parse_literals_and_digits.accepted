@@ -6,5 +6,36 @@ test_name: parse_literals_and_digits_test
 ---
 Literal(
   "R",
-  Digit(Literal("D", Digit(Match))),
+  OneOf(
+    [
+      Literal("0", Match),
+      Literal("1", Match),
+      Literal("2", Match),
+      Literal("3", Match),
+      Literal("4", Match),
+      Literal("5", Match),
+      Literal("6", Match),
+      Literal("7", Match),
+      Literal("8", Match),
+      Literal("9", Match),
+    ],
+    Literal(
+      "D",
+      OneOf(
+        [
+          Literal("0", Match),
+          Literal("1", Match),
+          Literal("2", Match),
+          Literal("3", Match),
+          Literal("4", Match),
+          Literal("5", Match),
+          Literal("6", Match),
+          Literal("7", Match),
+          Literal("8", Match),
+          Literal("9", Match),
+        ],
+        Match,
+      ),
+    ),
+  ),
 )

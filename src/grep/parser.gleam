@@ -1,4 +1,6 @@
+import gleam/int
 import gleam/iterator
+import gleam/list
 import grep/lexer
 
 pub type Grep {
@@ -6,8 +8,8 @@ pub type Grep {
   Match
   /// Match a literal string verbatim
   Literal(String, next: Grep)
-  /// Match a decimal digit 0-9
-  Digit(next: Grep)
+  /// Match any one of the choices
+  OneOf(List(Grep), next: Grep)
 }
 
 pub fn parse(source: String) -> Grep {
@@ -15,7 +17,7 @@ pub fn parse(source: String) -> Grep {
     use grep, token <- iterator.fold(over: lexer.lex(source), from: Match)
     case token {
       lexer.Literal(s) -> Literal(s, grep)
-      lexer.Digit -> Digit(grep)
+      lexer.Digit -> digit(grep)
     }
   }
   |> reverse(Match)
@@ -25,6 +27,13 @@ fn reverse(grep: Grep, reversed: Grep) -> Grep {
   case grep {
     Match -> reversed
     Literal(s, next) -> reverse(next, Literal(s, reversed))
-    Digit(next) -> reverse(next, Digit(reversed))
+    OneOf(greps, next) -> reverse(next, OneOf(greps, reversed))
   }
+}
+
+fn digit(next: Grep) -> Grep {
+  list.range(from: 0, to: 9)
+  |> list.map(int.to_string)
+  |> list.map(Literal(_, Match))
+  |> OneOf(next)
 }

@@ -20,7 +20,7 @@ pub fn parse(source: String) -> Grep {
       lexer.Literal(s) -> Literal(s, grep)
       lexer.Digit -> digit(grep)
       lexer.Word -> word(grep)
-      lexer.Group(_) -> todo
+      lexer.PositiveCharacterGroup(_) -> todo
     }
   }
   |> reverse(Match)

@@ -1,0 +1,13 @@
+---
+version: 1.1.7
+title: Lex positive character group abc
+file: ./test/grep/lexer_test.gleam
+test_name: lex_positive_character_group_test
+---
+[
+  Group(True),
+  Literal("a"),
+  Literal("b"),
+  Literal("c"),
+  Group(False),
+]

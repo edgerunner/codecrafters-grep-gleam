@@ -5,6 +5,7 @@ pub type Token {
   Literal(String)
   Digit
   Word
+  Group(Bool)
 }
 
 pub fn lex(source: String) -> Iterator(Token) {
@@ -14,6 +15,10 @@ pub fn lex(source: String) -> Iterator(Token) {
       _, "\\" -> Error("\\")
       Error("\\"), "d" -> Ok(Digit)
       Error("\\"), "w" -> Ok(Word)
+      Error("\\"), "[" -> Ok(Literal("["))
+      Error("\\"), "]" -> Ok(Literal("]"))
+      _, "[" -> Ok(Group(True))
+      _, "]" -> Ok(Group(False))
       _, _ -> Ok(Literal(grapheme))
     }
   })

@@ -44,3 +44,17 @@ pub fn lex_literals_and_classes_test() {
   |> pprint.format
   |> birdie.snap("Lex literals and classes")
 }
+
+pub fn lex_positive_character_group_test() {
+  lexer.lex("[abc]")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex positive character group abc")
+}
+
+pub fn lex_literal_brackets_test() {
+  lexer.lex("\\[abc\\]")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex literal brackets")
+}

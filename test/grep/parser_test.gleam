@@ -37,3 +37,9 @@ pub fn parse_literals_and_classes_test() {
   |> pprint.format
   |> birdie.snap("Parse literals and classes: R\\d\\w2")
 }
+
+pub fn parse_positive_character_group_abc_test() {
+  parser.parse("[abc]")
+  |> pprint.format
+  |> birdie.snap("Parse positive character group abc")
+}

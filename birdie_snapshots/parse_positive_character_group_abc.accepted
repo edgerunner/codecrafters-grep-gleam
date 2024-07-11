@@ -1,0 +1,14 @@
+---
+version: 1.1.7
+title: Parse positive character group abc
+file: ./test/grep/parser_test.gleam
+test_name: parse_positive_character_group_abc_test
+---
+OneOf(
+  [
+    Literal("a", Match),
+    Literal("b", Match),
+    Literal("c", Match),
+  ],
+  Match,
+)

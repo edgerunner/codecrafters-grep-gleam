@@ -1,6 +1,7 @@
 import gleam/int
 import gleam/iterator
 import gleam/list
+import gleam/set.{type Set}
 import gleam/string
 import grep/lexer
 
@@ -20,7 +21,8 @@ pub fn parse(source: String) -> Grep {
       lexer.Literal(s) -> Literal(s, grep)
       lexer.Digit -> digit(grep)
       lexer.Word -> word(grep)
-      lexer.PositiveCharacterGroup(_) -> todo
+      lexer.PositiveCharacterGroup(characters) ->
+        positive_character_group(characters, grep)
     }
   }
   |> reverse(Match)
@@ -60,6 +62,12 @@ fn alpha_lower(next: Grep) -> Grep {
   |> list.filter_map(string.utf_codepoint)
   |> string.from_utf_codepoints
   |> string.to_graphemes
+  |> list.map(Literal(_, Match))
+  |> OneOf(next)
+}
+
+fn positive_character_group(characters: Set(String), next: Grep) -> Grep {
+  set.to_list(characters)
   |> list.map(Literal(_, Match))
   |> OneOf(next)
 }

@@ -1,7 +1,7 @@
 import gleam/list
 import gleam/result
 import gleam/string
-import grep/parser.{type Grep, Literal, Match, OneOf}
+import grep/parser.{type Grep, Literal, Match, Not, OneOf}
 
 pub fn evaluate(string: String, pattern: Grep) -> Result(String, Nil) {
   case pattern {
@@ -12,6 +12,8 @@ pub fn evaluate(string: String, pattern: Grep) -> Result(String, Nil) {
     OneOf(greps, next) -> {
       one_of(string, greps) |> result.then(evaluate(_, next))
     }
+
+    Not(grep, next) -> todo
   }
 }
 

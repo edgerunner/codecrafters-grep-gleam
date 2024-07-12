@@ -11,6 +11,7 @@ pub type Grep {
   Literal(String, next: Grep)
   /// Match any one of the choices
   OneOf(List(Grep), next: Grep)
+  Not(Grep, next: Grep)
 }
 
 pub fn parse(source: String) -> Grep {
@@ -21,8 +22,9 @@ pub fn parse(source: String) -> Grep {
       lexer.Digit -> digit(grep)
       lexer.Word -> word(grep)
       lexer.PositiveCharacterGroup(characters) ->
-        positive_character_group(characters, grep)
-      lexer.NegativeCharacterGroup(characters) -> todo
+        character_group(characters, grep)
+      lexer.NegativeCharacterGroup(characters) ->
+        character_group(characters, Match) |> Not(grep)
     }
   }
   |> reverse(Match)
@@ -33,6 +35,7 @@ fn reverse(grep: Grep, reversed: Grep) -> Grep {
     Match -> reversed
     Literal(s, next) -> reverse(next, Literal(s, reversed))
     OneOf(greps, next) -> reverse(next, OneOf(greps, reversed))
+    Not(grep, next) -> reverse(next, Not(grep, reversed))
   }
 }
 
@@ -66,7 +69,7 @@ fn alpha_lower(next: Grep) -> Grep {
   |> OneOf(next)
 }
 
-fn positive_character_group(characters: List(String), next: Grep) -> Grep {
+fn character_group(characters: List(String), next: Grep) -> Grep {
   characters
   |> list.map(Literal(_, Match))
   |> OneOf(next)

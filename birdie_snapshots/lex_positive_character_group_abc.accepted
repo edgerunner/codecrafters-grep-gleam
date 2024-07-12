@@ -5,9 +5,5 @@ file: ./test/grep/lexer_test.gleam
 test_name: lex_positive_character_group_test
 ---
 [
-  PositiveCharacterGroup(Set(dict.from_list([
-    #("a", []),
-    #("b", []),
-    #("c", []),
-  ]))),
+  PositiveCharacterGroup(["c", "b", "a"]),
 ]

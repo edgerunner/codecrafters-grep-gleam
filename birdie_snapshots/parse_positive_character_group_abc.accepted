@@ -6,9 +6,9 @@ test_name: parse_positive_character_group_abc_test
 ---
 OneOf(
   [
-    Literal("a", Match),
-    Literal("b", Match),
     Literal("c", Match),
+    Literal("b", Match),
+    Literal("a", Match),
   ],
   Match,
 )

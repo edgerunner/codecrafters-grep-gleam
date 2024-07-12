@@ -1,18 +1,18 @@
 import gleam/iterator.{type Iterator}
-import gleam/set.{type Set}
 import gleam/string
 
 pub type Token {
   Literal(String)
   Digit
   Word
-  PositiveCharacterGroup(Set(String))
+  PositiveCharacterGroup(List(String))
+  NegativeCharacterGroup(List(String))
 }
 
 type Scaffold {
   Start
   Escape
-  GroupScaffold(characters: set.Set(String))
+  GroupScaffold(characters: List(String), negative: Bool)
 }
 
 pub fn lex(source: String) -> Iterator(Token) {
@@ -24,11 +24,14 @@ pub fn lex(source: String) -> Iterator(Token) {
       Error(Escape), "w" -> Ok(Word)
       Error(Escape), "[" -> Ok(Literal("["))
       Error(Escape), "]" -> Ok(Literal("]"))
-      _, "[" -> Error(GroupScaffold(characters: set.new()))
-      Error(GroupScaffold(characters)), "]" ->
+      _, "[" -> Error(GroupScaffold(characters: [], negative: False))
+      Error(GroupScaffold([], False)), "^" -> Error(GroupScaffold([], True))
+      Error(GroupScaffold(characters, False)), "]" ->
         Ok(PositiveCharacterGroup(characters))
-      Error(GroupScaffold(characters)), c ->
-        set.insert(characters, c) |> GroupScaffold |> Error
+      Error(GroupScaffold(characters, True)), "]" ->
+        Ok(NegativeCharacterGroup(characters))
+      Error(GroupScaffold(characters, negative)), c ->
+        [c, ..characters] |> GroupScaffold(negative) |> Error
       _, _ -> Ok(Literal(grapheme))
     }
   })

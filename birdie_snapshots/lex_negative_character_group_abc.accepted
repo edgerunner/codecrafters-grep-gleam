@@ -1,0 +1,9 @@
+---
+version: 1.1.7
+title: Lex negative character group abc
+file: ./test/grep/lexer_test.gleam
+test_name: lex_negative_character_group_test
+---
+[
+  NegativeCharacterGroup(["c", "b", "a"]),
+]

@@ -52,6 +52,13 @@ pub fn lex_positive_character_group_test() {
   |> birdie.snap("Lex positive character group abc")
 }
 
+pub fn lex_negative_character_group_test() {
+  lexer.lex("[^abc]")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex negative character group abc")
+}
+
 pub fn lex_literal_brackets_test() {
   lexer.lex("\\[abc\\]")
   |> iterator.to_list

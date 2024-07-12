@@ -13,7 +13,7 @@ pub fn evaluate(string: String, pattern: Grep) -> Result(String, Nil) {
       one_of(string, greps) |> result.then(evaluate(_, next))
     }
 
-    Not(grep, next) -> todo
+    Not(grep, next) -> not(string, grep) |> result.then(evaluate(_, next))
   }
 }
 
@@ -27,4 +27,11 @@ fn literal(string: String, match: String) -> Result(String, Nil) {
 fn one_of(string: String, greps: List(Grep)) -> Result(String, Nil) {
   use grep <- list.find_map(greps)
   evaluate(string, grep)
+}
+
+fn not(string: String, grep: Grep) -> Result(String, Nil) {
+  case evaluate(string, grep) {
+    Ok(_) -> Error(Nil)
+    Error(Nil) -> Ok(string)
+  }
 }

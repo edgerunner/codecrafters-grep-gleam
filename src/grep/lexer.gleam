@@ -7,6 +7,7 @@ pub type Token {
   Word
   PositiveCharacterGroup(List(String))
   NegativeCharacterGroup(List(String))
+  StartAnchor
 }
 
 type Scaffold {
@@ -25,6 +26,7 @@ pub fn lex(source: String) -> Iterator(Token) {
       Error(Escape), "[" -> Ok(Literal("["))
       Error(Escape), "]" -> Ok(Literal("]"))
       _, "[" -> Error(GroupScaffold(characters: [], negative: False))
+      Error(Start), "^" -> Ok(StartAnchor)
       Error(GroupScaffold([], False)), "^" -> Error(GroupScaffold([], True))
       Error(GroupScaffold(characters, False)), "]" ->
         Ok(PositiveCharacterGroup(characters))

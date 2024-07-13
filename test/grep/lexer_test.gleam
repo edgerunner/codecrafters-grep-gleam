@@ -65,3 +65,24 @@ pub fn lex_literal_brackets_test() {
   |> pprint.format
   |> birdie.snap("Lex literal brackets")
 }
+
+pub fn lex_start_anchor_test() {
+  lexer.lex("^abc")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex start anchor")
+}
+
+pub fn lex_literal_caret_test() {
+  lexer.lex("ab^c")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex literal caret without escape")
+}
+
+pub fn lex_escaped_caret_test() {
+  lexer.lex("\\^abc")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex literal caret with escape")
+}

@@ -1,0 +1,12 @@
+---
+version: 1.1.7
+title: Lex literal caret without escape
+file: ./test/grep/lexer_test.gleam
+test_name: lex_literal_caret_test
+---
+[
+  Literal("a"),
+  Literal("b"),
+  Literal("^"),
+  Literal("c"),
+]

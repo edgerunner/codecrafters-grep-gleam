@@ -1,4 +1,3 @@
-import gleam/list
 import gleam/result
 import gleam/string
 import grep/parser.{type Grep, Literal, Match, Not, OneOf}

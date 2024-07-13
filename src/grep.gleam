@@ -1,6 +1,7 @@
 import argv
 import gleam/erlang
 import gleam/io
+import gleam/string
 import grep/evaluator
 import grep/parser
 
@@ -10,7 +11,8 @@ pub fn main() {
 
   case args {
     ["-E", pattern, ..] -> {
-      case match_pattern(input_line, pattern) {
+      let grep = parser.parse(pattern)
+      case match_pattern(input_line, grep) {
         True -> exit(0)
         False -> exit(1)
       }
@@ -22,10 +24,11 @@ pub fn main() {
   }
 }
 
-fn match_pattern(input_line: String, pattern: String) -> Bool {
-  case parser.parse(pattern) |> evaluator.evaluate(input_line, _) {
-    Ok(_) -> True
-    _ -> False
+fn match_pattern(input_line: String, grep: parser.Grep) -> Bool {
+  case evaluator.evaluate(input_line, grep), input_line {
+    Ok(_), _ -> True
+    Error(Nil), "" -> False
+    Error(Nil), _ -> string.drop_left(input_line, 1) |> match_pattern(grep)
   }
 }
 

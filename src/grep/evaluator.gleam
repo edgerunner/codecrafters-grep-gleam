@@ -3,7 +3,7 @@ import gleam/result
 import gleam/string
 import grep/parser.{type Grep, Literal, Match, Not, OneOf}
 
-pub fn evaluate(string: String, pattern: Grep) -> Result(String, Nil) {
+pub fn evaluate(string: String, pattern: Grep) -> Result(String, Bool) {
   case pattern {
     Match -> Ok(string)
     Literal(match, next) ->
@@ -17,21 +17,28 @@ pub fn evaluate(string: String, pattern: Grep) -> Result(String, Nil) {
   }
 }
 
-fn literal(string: String, match: String) -> Result(String, Nil) {
+fn literal(string: String, match: String) -> Result(String, Bool) {
   case string.starts_with(string, match) {
     True -> string |> string.drop_left(string.length(match)) |> Ok
-    False -> Error(Nil)
+    False -> Error(False)
   }
 }
 
-fn one_of(string: String, greps: List(Grep)) -> Result(String, Nil) {
-  use grep <- list.find_map(greps)
-  evaluate(string, grep)
+fn one_of(string: String, greps: List(Grep)) -> Result(String, Bool) {
+  case greps {
+    [] -> Error(False)
+    [grep, ..rest] ->
+      case evaluate(string, grep) {
+        Ok(remaining) -> Ok(remaining)
+        Error(True) -> Error(True)
+        Error(False) -> one_of(string, rest)
+      }
+  }
 }
 
-fn not(string: String, grep: Grep) -> Result(String, Nil) {
+fn not(string: String, grep: Grep) -> Result(String, Bool) {
   case evaluate(string, grep) {
-    Ok(_) -> Error(Nil)
-    Error(Nil) -> Ok(string)
+    Ok(_) -> Error(True)
+    Error(_) -> Ok(string)
   }
 }

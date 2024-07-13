@@ -27,8 +27,9 @@ pub fn main() {
 fn match_pattern(input_line: String, grep: parser.Grep) -> Bool {
   case evaluator.evaluate(input_line, grep), input_line {
     Ok(_), _ -> True
-    Error(Nil), "" -> False
-    Error(Nil), _ -> string.drop_left(input_line, 1) |> match_pattern(grep)
+    Error(_), "" -> False
+    Error(True), _ -> False
+    Error(False), _ -> string.drop_left(input_line, 1) |> match_pattern(grep)
   }
 }
 

@@ -14,6 +14,9 @@ pub type Grep {
   Not(Grep, next: Grep)
 }
 
+/// Start-of-text control character
+const stx = "\u{2}"
+
 pub fn parse(source: String) -> Grep {
   {
     use grep, token <- iterator.fold(over: lexer.lex(source), from: Match)
@@ -25,7 +28,7 @@ pub fn parse(source: String) -> Grep {
         character_group(characters, grep)
       lexer.NegativeCharacterGroup(characters) ->
         character_group(characters, Match) |> Not(grep)
-      lexer.StartAnchor -> todo
+      lexer.StartAnchor -> Literal(stx, grep)
     }
   }
   |> reverse(Match)

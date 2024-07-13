@@ -49,3 +49,9 @@ pub fn parse_negative_character_group_abc_test() {
   |> pprint.format
   |> birdie.snap("Parse negative character group abc")
 }
+
+pub fn parse_start_of_text_anchor_abc_test() {
+  parser.parse("^abc")
+  |> pprint.format
+  |> birdie.snap("Parse start-of-text anchor")
+}

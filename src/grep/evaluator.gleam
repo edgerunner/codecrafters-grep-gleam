@@ -20,7 +20,7 @@ pub fn evaluate(string: String, pattern: Grep) -> Result(String, Bool) {
       }
     Not(grep, next) -> not(string, grep) |> result.then(evaluate(_, next))
 
-    Many(grep, next) -> todo
+    Many(grep, next) -> many(string, grep) |> result.then(evaluate(_, next))
   }
 }
 
@@ -47,5 +47,16 @@ fn not(string: String, grep: Grep) -> Result(String, Bool) {
   case evaluate(string, grep) {
     Ok(_) -> Error(True)
     Error(_) -> string |> string.drop_left(1) |> Ok
+  }
+}
+
+fn many(string: String, grep: Grep) -> Result(String, Bool) {
+  evaluate(string, grep) |> result.then(any(_, grep))
+}
+
+fn any(string: String, grep: Grep) -> Result(String, Bool) {
+  case evaluate(string, grep) {
+    Ok(remaining) -> any(remaining, grep)
+    Error(_) -> Ok(string)
   }
 }

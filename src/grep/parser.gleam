@@ -15,6 +15,8 @@ pub type Grep {
   Not(Grep, next: Grep)
   /// Match at least one instance
   Many(Grep, next: Grep)
+  /// Match zero or one instance
+  Maybe(Grep, next: Grep)
 }
 
 /// Start-of-text control character
@@ -40,6 +42,10 @@ pub fn parse(source: String) -> Grep {
         let #(head, tail) = uncons(grep)
         Many(head, tail)
       }
+      lexer.OneOrNone -> {
+        let #(head, tail) = uncons(grep)
+        Maybe(head, tail)
+      }
     }
   }
   |> reverse(Match)
@@ -52,6 +58,7 @@ fn reverse(grep: Grep, reversed: Grep) -> Grep {
     OneOf(greps, next) -> reverse(next, OneOf(greps, reversed))
     Not(grep, next) -> reverse(next, Not(grep, reversed))
     Many(grep, next) -> reverse(next, Many(grep, reversed))
+    Maybe(grep, next) -> reverse(next, Maybe(grep, reversed))
   }
 }
 
@@ -62,6 +69,7 @@ fn uncons(grep: Grep) -> #(Grep, Grep) {
     OneOf(x, next) -> #(OneOf(x, Match), next)
     Not(x, next) -> #(Not(x, Match), next)
     Many(x, next) -> #(Many(x, Match), next)
+    Maybe(x, next) -> #(Maybe(x, Match), next)
   }
 }
 

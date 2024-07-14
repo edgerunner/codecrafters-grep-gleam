@@ -67,3 +67,9 @@ pub fn parse_one_or_more_abplusc_test() {
   |> pprint.format
   |> birdie.snap("Parse one or more bs in abc")
 }
+
+pub fn parse_one_or_none_abquestionc_test() {
+  parser.parse("ab?c")
+  |> pprint.format
+  |> birdie.snap("Parse one or no bs in abc")
+}

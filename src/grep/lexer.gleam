@@ -10,6 +10,7 @@ pub type Token {
   StartAnchor
   EndAnchor
   OneOrMore
+  OneOrNone
 }
 
 type Scaffold {
@@ -27,6 +28,7 @@ pub fn lex(source: String) -> Iterator(Token) {
       Error(Escape), "w" -> Ok(Word)
       Error(Escape), x -> Ok(Literal(x))
       Ok(_), "+" -> Ok(OneOrMore)
+      Ok(_), "?" -> Ok(OneOrNone)
       _, "$" -> Ok(EndAnchor)
       Error(Start), "^" -> Ok(StartAnchor)
       _, "[" -> Error(GroupScaffold(characters: [], negative: False))

@@ -55,3 +55,9 @@ pub fn parse_start_of_text_anchor_abc_test() {
   |> pprint.format
   |> birdie.snap("Parse start-of-text anchor")
 }
+
+pub fn parse_end_of_text_anchor_abc_test() {
+  parser.parse("abc$")
+  |> pprint.format
+  |> birdie.snap("Parse end-of-text anchor")
+}

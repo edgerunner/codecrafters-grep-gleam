@@ -11,11 +11,15 @@ pub type Grep {
   Literal(String, next: Grep)
   /// Match any one of the choices
   OneOf(List(Grep), next: Grep)
+  /// Match anything but this
   Not(Grep, next: Grep)
 }
 
 /// Start-of-text control character
 const stx = "\u{2}"
+
+/// End-of-text control character
+const etx = "\u{3}"
 
 pub fn parse(source: String) -> Grep {
   {
@@ -29,7 +33,7 @@ pub fn parse(source: String) -> Grep {
       lexer.NegativeCharacterGroup(characters) ->
         character_group(characters, Match) |> Not(grep)
       lexer.StartAnchor -> Literal(stx, grep)
-      lexer.EndAnchor -> todo
+      lexer.EndAnchor -> Literal(etx, grep)
     }
   }
   |> reverse(Match)

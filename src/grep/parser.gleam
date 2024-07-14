@@ -13,6 +13,8 @@ pub type Grep {
   OneOf(List(Grep), next: Grep)
   /// Match anything but this
   Not(Grep, next: Grep)
+  /// Match at least one instance
+  Many(Grep, next: Grep)
 }
 
 /// Start-of-text control character
@@ -34,6 +36,10 @@ pub fn parse(source: String) -> Grep {
         character_group(characters, Match) |> Not(grep)
       lexer.StartAnchor -> Literal(stx, grep)
       lexer.EndAnchor -> Literal(etx, grep)
+      lexer.OneOrMore -> {
+        let #(head, tail) = uncons(grep)
+        Many(head, tail)
+      }
     }
   }
   |> reverse(Match)
@@ -45,6 +51,17 @@ fn reverse(grep: Grep, reversed: Grep) -> Grep {
     Literal(s, next) -> reverse(next, Literal(s, reversed))
     OneOf(greps, next) -> reverse(next, OneOf(greps, reversed))
     Not(grep, next) -> reverse(next, Not(grep, reversed))
+    Many(grep, next) -> reverse(next, Many(grep, reversed))
+  }
+}
+
+fn uncons(grep: Grep) -> #(Grep, Grep) {
+  case grep {
+    Match -> #(Match, Match)
+    Literal(x, next) -> #(Literal(x, Match), next)
+    OneOf(x, next) -> #(OneOf(x, Match), next)
+    Not(x, next) -> #(Not(x, Match), next)
+    Many(x, next) -> #(Many(x, Match), next)
   }
 }
 

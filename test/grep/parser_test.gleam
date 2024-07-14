@@ -61,3 +61,9 @@ pub fn parse_end_of_text_anchor_abc_test() {
   |> pprint.format
   |> birdie.snap("Parse end-of-text anchor")
 }
+
+pub fn parse_one_or_more_abplusc_test() {
+  parser.parse("ab+c")
+  |> pprint.format
+  |> birdie.snap("Parse one or more bs in abc")
+}

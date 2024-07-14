@@ -1,6 +1,6 @@
 import gleam/result
 import gleam/string
-import grep/parser.{type Grep, Literal, Match, Not, OneOf}
+import grep/parser.{type Grep, Literal, Many, Match, Not, OneOf}
 
 pub fn evaluate(string: String, pattern: Grep) -> Result(String, Bool) {
   case pattern {
@@ -19,6 +19,8 @@ pub fn evaluate(string: String, pattern: Grep) -> Result(String, Bool) {
         Ok(_) -> Error(False)
       }
     Not(grep, next) -> not(string, grep) |> result.then(evaluate(_, next))
+
+    Many(grep, next) -> todo
   }
 }
 

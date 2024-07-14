@@ -1,0 +1,13 @@
+---
+version: 1.1.7
+title: Parse one or more bs in abc
+file: ./test/grep/parser_test.gleam
+test_name: parse_one_or_more_abplusc_test
+---
+Literal(
+  "a",
+  Many(
+    Literal("b", Match),
+    Literal("c", Match),
+  ),
+)

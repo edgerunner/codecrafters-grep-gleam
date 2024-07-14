@@ -46,6 +46,8 @@ pub fn parse(source: String) -> Grep {
         let #(head, tail) = uncons(grep)
         Maybe(head, tail)
       }
+      lexer.Wildcard ->
+        Not(OneOf([Literal(stx, Match), Literal(etx, Match)], Match), grep)
     }
   }
   |> reverse(Match)

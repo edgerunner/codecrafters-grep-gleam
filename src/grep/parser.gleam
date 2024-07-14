@@ -29,6 +29,7 @@ pub fn parse(source: String) -> Grep {
       lexer.NegativeCharacterGroup(characters) ->
         character_group(characters, Match) |> Not(grep)
       lexer.StartAnchor -> Literal(stx, grep)
+      lexer.EndAnchor -> todo
     }
   }
   |> reverse(Match)

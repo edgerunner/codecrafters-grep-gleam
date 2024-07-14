@@ -8,6 +8,7 @@ pub type Token {
   PositiveCharacterGroup(List(String))
   NegativeCharacterGroup(List(String))
   StartAnchor
+  EndAnchor
 }
 
 type Scaffold {
@@ -23,10 +24,10 @@ pub fn lex(source: String) -> Iterator(Token) {
       _, "\\" -> Error(Escape)
       Error(Escape), "d" -> Ok(Digit)
       Error(Escape), "w" -> Ok(Word)
-      Error(Escape), "[" -> Ok(Literal("["))
-      Error(Escape), "]" -> Ok(Literal("]"))
-      _, "[" -> Error(GroupScaffold(characters: [], negative: False))
+      Error(Escape), x -> Ok(Literal(x))
+      _, "$" -> Ok(EndAnchor)
       Error(Start), "^" -> Ok(StartAnchor)
+      _, "[" -> Error(GroupScaffold(characters: [], negative: False))
       Error(GroupScaffold([], False)), "^" -> Error(GroupScaffold([], True))
       Error(GroupScaffold(characters, False)), "]" ->
         Ok(PositiveCharacterGroup(characters))

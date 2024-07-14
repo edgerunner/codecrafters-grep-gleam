@@ -86,3 +86,17 @@ pub fn lex_escaped_caret_test() {
   |> pprint.format
   |> birdie.snap("Lex literal caret with escape")
 }
+
+pub fn lex_end_anchor_test() {
+  lexer.lex("abc$")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex end anchor")
+}
+
+pub fn lex_escaped_dollar_test() {
+  lexer.lex("abc\\$")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex literal dollar sign with escape")
+}

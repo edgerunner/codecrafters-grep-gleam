@@ -12,6 +12,12 @@ pub fn evaluate(string: String, pattern: Grep) -> Result(String, Bool) {
       one_of(string, greps) |> result.then(evaluate(_, next))
     }
 
+    Not(grep, Match) ->
+      case not(string, grep) {
+        Error(e) -> Error(e)
+        Ok("") -> Ok("")
+        Ok(_) -> Error(False)
+      }
     Not(grep, next) -> not(string, grep) |> result.then(evaluate(_, next))
   }
 }
@@ -38,6 +44,6 @@ fn one_of(string: String, greps: List(Grep)) -> Result(String, Bool) {
 fn not(string: String, grep: Grep) -> Result(String, Bool) {
   case evaluate(string, grep) {
     Ok(_) -> Error(True)
-    Error(_) -> Ok(string)
+    Error(_) -> string |> string.drop_left(1) |> Ok
   }
 }

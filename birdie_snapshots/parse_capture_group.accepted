@@ -1,0 +1,32 @@
+---
+version: 1.1.7
+title: Parse capture group
+file: ./test/grep/parser_test.gleam
+test_name: parse_capture_group_test
+---
+OneOf(
+  [
+    Literal(
+      "c",
+      Literal("a", Literal("t", Match)),
+    ),
+    Literal(
+      "d",
+      Literal("o", Literal("g", Match)),
+    ),
+    Literal(
+      "m",
+      Literal(
+        "o",
+        Literal(
+          "u",
+          Literal(
+            "s",
+            Literal("e", Match),
+          ),
+        ),
+      ),
+    ),
+  ],
+  Match,
+)

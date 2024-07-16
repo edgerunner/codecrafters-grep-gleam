@@ -1,8 +1,8 @@
 import gleam/int
-import gleam/iterator
+import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/string
-import grep/lexer
+import grep/lexer.{type Token}
 
 pub type Grep {
   /// This is the end of a chain. If you reach this, you have a match
@@ -26,32 +26,40 @@ const stx = "\u{2}"
 const etx = "\u{3}"
 
 pub fn parse(source: String) -> Grep {
-  {
-    use grep, token <- iterator.fold(over: lexer.lex(source), from: Match)
-    case token {
-      lexer.Literal(s) -> Literal(s, grep)
-      lexer.Digit -> digit(grep)
-      lexer.Word -> word(grep)
-      lexer.PositiveCharacterGroup(characters) ->
-        character_group(characters, grep)
-      lexer.NegativeCharacterGroup(characters) ->
-        character_group(characters, Match) |> Not(grep)
-      lexer.StartAnchor -> Literal(stx, grep)
-      lexer.EndAnchor -> Literal(etx, grep)
-      lexer.OneOrMore -> {
-        let #(head, tail) = uncons(grep)
-        Many(head, tail)
-      }
-      lexer.OneOrNone -> {
-        let #(head, tail) = uncons(grep)
-        Maybe(head, tail)
-      }
-      lexer.Wildcard ->
-        Not(OneOf([Literal(stx, Match), Literal(etx, Match)], Match), grep)
-      lexer.Capture(_) -> todo
+  lexer.lex(source) |> parse_grep
+}
+
+fn parse_grep(tokens: Iterator(Token)) {
+  iterator.fold(over: tokens, from: Match, with: parse_token)
+  |> reverse(Match)
+}
+
+fn parse_token(grep: Grep, token: Token) -> Grep {
+  case token {
+    lexer.Literal(s) -> Literal(s, grep)
+    lexer.Digit -> digit(grep)
+    lexer.Word -> word(grep)
+    lexer.PositiveCharacterGroup(characters) ->
+      character_group(characters, grep)
+    lexer.NegativeCharacterGroup(characters) ->
+      character_group(characters, Match) |> Not(grep)
+    lexer.StartAnchor -> Literal(stx, grep)
+    lexer.EndAnchor -> Literal(etx, grep)
+    lexer.OneOrMore -> {
+      let #(head, tail) = uncons(grep)
+      Many(head, tail)
+    }
+    lexer.OneOrNone -> {
+      let #(head, tail) = uncons(grep)
+      Maybe(head, tail)
+    }
+    lexer.Wildcard ->
+      Not(OneOf([Literal(stx, Match), Literal(etx, Match)], Match), grep)
+    lexer.Capture(alternatives) -> {
+      list.map(alternatives, parse_grep)
+      |> OneOf(grep)
     }
   }
-  |> reverse(Match)
 }
 
 fn reverse(grep: Grep, reversed: Grep) -> Grep {

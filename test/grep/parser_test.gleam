@@ -73,3 +73,9 @@ pub fn parse_one_or_none_abquestionc_test() {
   |> pprint.format
   |> birdie.snap("Parse one or no bs in abc")
 }
+
+pub fn parse_capture_group_test() {
+  parser.parse("(cat|dog|mouse)")
+  |> pprint.format
+  |> birdie.snap("Parse capture group")
+}

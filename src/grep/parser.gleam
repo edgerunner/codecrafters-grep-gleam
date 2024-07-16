@@ -48,6 +48,7 @@ pub fn parse(source: String) -> Grep {
       }
       lexer.Wildcard ->
         Not(OneOf([Literal(stx, Match), Literal(etx, Match)], Match), grep)
+      lexer.Capture(_) -> todo
     }
   }
   |> reverse(Match)

@@ -1,5 +1,6 @@
 import birdie
 import gleam/iterator
+import gleam/list
 import grep/lexer
 import pprint
 
@@ -99,4 +100,22 @@ pub fn lex_escaped_dollar_test() {
   |> iterator.to_list
   |> pprint.format
   |> birdie.snap("Lex literal dollar sign with escape")
+}
+
+pub fn lex_capture_group_test() {
+  lexer.lex("(cat|dog|mouse)")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex capture group")
+}
+
+pub fn lex_capture_group_1_test() {
+  let assert Ok(lexer.Capture([first, ..])) =
+    lexer.lex("(cat|dog|mouse)")
+    |> iterator.to_list
+    |> list.first
+
+  iterator.to_list(first)
+  |> pprint.format
+  |> birdie.snap("Lex first option in capture group")
 }

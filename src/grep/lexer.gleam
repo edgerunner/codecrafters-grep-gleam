@@ -20,12 +20,16 @@ type Scaffold {
   Start
   Escape
   GroupScaffold(characters: List(String), negative: Bool)
-  CaptureScaffold(List(Iterator(Token)))
+  CaptureScaffold(List(Iterator(String)))
 }
 
 pub fn lex(source: String) -> Iterator(Token) {
   unfold(source)
-  |> iterator.scan(from: Error(Start), with: lex_single_grapheme)
+  |> lex_graphemes
+}
+
+fn lex_graphemes(graphemes: Iterator(String)) -> Iterator(Token) {
+  iterator.scan(over: graphemes, from: Error(Start), with: lex_single_grapheme)
   |> iterator.filter_map(fn(x) { x })
 }
 
@@ -52,26 +56,25 @@ fn lex_single_grapheme(
     _, "$" -> Ok(EndAnchor)
     Error(Start), "^" -> Ok(StartAnchor)
     _, "(" -> Error(CaptureScaffold([iterator.empty()]))
-    _, "[" -> Error(GroupScaffold(characters: [], negative: False))
     Error(GroupScaffold([], False)), "^" -> Error(GroupScaffold([], True))
-    Error(GroupScaffold(characters, False)), "]" ->
-      Ok(PositiveCharacterGroup(characters))
-    Error(GroupScaffold(characters, True)), "]" ->
-      Ok(NegativeCharacterGroup(characters))
     Error(CaptureScaffold(alternatives)), "|" ->
       Error(CaptureScaffold([iterator.empty(), ..alternatives]))
     Error(CaptureScaffold(alternatives)), ")" ->
-      list.reverse(alternatives) |> Capture |> Ok
-    Error(GroupScaffold(characters, negative)), c ->
-      [c, ..characters] |> GroupScaffold(negative) |> Error
+      list.reverse(alternatives) |> list.map(lex_graphemes) |> Capture |> Ok
     Error(CaptureScaffold([alternative, ..others])), c -> {
-      let assert Ok(token) = lex_single_grapheme(Error(Start), c)
-      iterator.single(token)
+      iterator.single(c)
       |> iterator.append(to: alternative, suffix: _)
       |> list.prepend(others, _)
       |> CaptureScaffold
       |> Error
     }
+    _, "[" -> Error(GroupScaffold(characters: [], negative: False))
+    Error(GroupScaffold(characters, False)), "]" ->
+      Ok(PositiveCharacterGroup(characters))
+    Error(GroupScaffold(characters, True)), "]" ->
+      Ok(NegativeCharacterGroup(characters))
+    Error(GroupScaffold(characters, negative)), c ->
+      [c, ..characters] |> GroupScaffold(negative) |> Error
     _, _ -> Ok(Literal(grapheme))
   }
 }

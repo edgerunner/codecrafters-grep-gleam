@@ -119,3 +119,13 @@ pub fn lex_capture_group_1_test() {
   |> pprint.format
   |> birdie.snap("Lex first option in capture group")
 }
+
+pub fn lex_capture_group_with_inner_group_test() {
+  let assert [lexer.Capture(parts)] =
+    lexer.lex("([bc]at|dog|mouse)")
+    |> iterator.to_list
+
+  list.map(parts, iterator.to_list)
+  |> pprint.format
+  |> birdie.snap("Lex first option with inner group in capture group")
+}

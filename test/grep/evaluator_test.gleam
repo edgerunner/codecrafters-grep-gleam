@@ -43,6 +43,18 @@ pub fn word_star_no_match_test() {
   snap_no_match(string: "*", pattern: "\\w")
 }
 
+pub fn capture_group_test() {
+  snap_match(string: "catastrophe", pattern: "(dog|cat|mouse)")
+}
+
+pub fn capture_group_with_inner_parts_test() {
+  snap_match(string: "batman", pattern: "(dog|[bc]at)")
+}
+
+pub fn capture_group_with_tail_test() {
+  snap_match(string: "tomcat", pattern: "(pussy|tom)cat")
+}
+
 fn snap_match(string string, pattern pattern) {
   parser.parse(pattern)
   |> evaluator.evaluate(string, _)

@@ -1,70 +1,67 @@
-import birdie
+import gleeunit/should
 import grep/evaluator
 import grep/parser
-import pprint
 
 pub fn a_match_a_test() {
-  snap_match(string: "a", pattern: "a")
+  match(string: "a", pattern: "a")
 }
 
 pub fn s_no_match_a_test() {
-  snap_no_match(string: "s", pattern: "a")
+  no_match(string: "s", pattern: "a")
 }
 
 pub fn asd_match_a_test() {
-  snap_match(string: "asd", pattern: "a")
+  match(string: "asd", pattern: "a")
 }
 
 pub fn bad_no_match_a_test() {
-  snap_no_match(string: "bad", pattern: "a")
+  no_match(string: "bad", pattern: "a")
 }
 
 pub fn digit_2_match_test() {
-  snap_match(string: "2", pattern: "\\d")
+  match(string: "2", pattern: "\\d")
 }
 
 pub fn digit_q_no_match_test() {
-  snap_no_match(string: "q", pattern: "\\d")
+  no_match(string: "q", pattern: "\\d")
 }
 
 pub fn word_2_match_test() {
-  snap_match(string: "2", pattern: "\\w")
+  match(string: "2", pattern: "\\w")
 }
 
 pub fn word_q_match_test() {
-  snap_match(string: "q", pattern: "\\w")
+  match(string: "q", pattern: "\\w")
 }
 
 pub fn word_capital_s_match_test() {
-  snap_match(string: "S", pattern: "\\w")
+  match(string: "S", pattern: "\\w")
 }
 
 pub fn word_star_no_match_test() {
-  snap_no_match(string: "*", pattern: "\\w")
+  no_match(string: "*", pattern: "\\w")
 }
 
 pub fn capture_group_test() {
-  snap_match(string: "catastrophe", pattern: "(dog|cat|mouse)")
+  match(string: "catastrophe", pattern: "(dog|cat|mouse)")
 }
 
 pub fn capture_group_with_inner_parts_test() {
-  snap_match(string: "batman", pattern: "(dog|[bc]at)")
+  match(string: "batman", pattern: "(dog|[bc]at)")
 }
 
 pub fn capture_group_with_tail_test() {
-  snap_match(string: "tomcat", pattern: "(pussy|tom)cat")
+  match(string: "tomcat", pattern: "(pussy|tom)cat")
 }
 
-fn snap_match(string string, pattern pattern) {
+fn match(string string, pattern pattern) {
   parser.parse(pattern)
   |> evaluator.evaluate(string, _)
-  |> pprint.format
-  |> birdie.snap(pattern <> " matches " <> string)
+  |> should.be_ok
 }
 
-fn snap_no_match(string string, pattern pattern) {
+fn no_match(string string, pattern pattern) {
   parser.parse(pattern)
   |> evaluator.evaluate(string, _)
-  |> pprint.format
-  |> birdie.snap(pattern <> " does not match " <> string)
+  |> should.be_error
 }

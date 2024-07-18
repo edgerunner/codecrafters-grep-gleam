@@ -1,0 +1,26 @@
+---
+version: 1.1.7
+title: Lex complex backreference
+file: ./test/grep/lexer_test.gleam
+test_name: lex_complex_backreference_test
+---
+[
+  Capture([Iterator(//fn() { ... })]),
+  Literal(" "),
+  Literal("i"),
+  Literal("s"),
+  Literal(" "),
+  Literal("d"),
+  Literal("o"),
+  Literal("i"),
+  Literal("n"),
+  Literal("g"),
+  Literal(" "),
+  Backreference(1),
+  Literal(" "),
+  Literal("t"),
+  Literal("i"),
+  Literal("m"),
+  Literal("e"),
+  Literal("s"),
+]

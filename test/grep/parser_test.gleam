@@ -85,3 +85,9 @@ pub fn parse_backreference_test() {
   |> pprint.format
   |> birdie.snap("Parse backreference")
 }
+
+pub fn parse_complex_backreference_test() {
+  parser.parse("(\\w\\w\\w\\w \\d\\d\\d) is doing \\1 times")
+  |> pprint.format
+  |> birdie.snap("Parse complex backreference")
+}

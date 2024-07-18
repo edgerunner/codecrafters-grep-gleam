@@ -62,6 +62,14 @@ pub fn backreference_no_match_test() {
   no_match(string: "tinder", pattern: "(tin)\\1")
 }
 
+/// this is from a failed codecrafters test
+pub fn complex_backreference_match_test() {
+  match(
+    string: "grep 101 is doing grep 101 times",
+    pattern: "(\\w\\w\\w\\w \\d\\d\\d) is doing \\1 times",
+  )
+}
+
 fn match(string string, pattern pattern) {
   parser.parse(pattern)
   |> evaluator.run(string, _)

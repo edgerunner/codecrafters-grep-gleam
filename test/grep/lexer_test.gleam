@@ -136,3 +136,10 @@ pub fn lex_backreference_test() {
   |> pprint.format
   |> birdie.snap("Lex backreference")
 }
+
+pub fn lex_complex_backreference_test() {
+  lexer.lex("(\\w\\w\\w\\w \\d\\d\\d) is doing \\1 times")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex complex backreference")
+}

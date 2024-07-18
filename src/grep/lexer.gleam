@@ -49,7 +49,7 @@ fn lex_single_grapheme(
   grapheme: String,
 ) -> Result(Token, Scaffold) {
   case state, grapheme {
-    _, "\\" -> Error(Escape)
+    Error(Start), "\\" | Ok(_), "\\" -> Error(Escape)
     Error(Escape), "d" -> Ok(Digit)
     Error(Escape), "w" -> Ok(Word)
     Error(Escape), x ->

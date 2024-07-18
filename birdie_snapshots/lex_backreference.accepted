@@ -1,0 +1,14 @@
+---
+version: 1.1.7
+title: Lex backreference
+file: ./test/grep/lexer_test.gleam
+test_name: lex_backreference_test
+---
+[
+  Capture([
+    Iterator(//fn() { ... }),
+    Iterator(//fn() { ... }),
+  ]),
+  Literal(" "),
+  Backreference(1),
+]

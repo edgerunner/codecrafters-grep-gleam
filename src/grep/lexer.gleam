@@ -1,5 +1,7 @@
+import gleam/int
 import gleam/iterator.{type Iterator}
 import gleam/list
+import gleam/result
 import gleam/string
 
 pub type Token {
@@ -14,6 +16,7 @@ pub type Token {
   OneOrNone
   Wildcard
   Capture(List(Iterator(Token)))
+  Backreference(Int)
 }
 
 type Scaffold {
@@ -49,7 +52,11 @@ fn lex_single_grapheme(
     _, "\\" -> Error(Escape)
     Error(Escape), "d" -> Ok(Digit)
     Error(Escape), "w" -> Ok(Word)
-    Error(Escape), x -> Ok(Literal(x))
+    Error(Escape), x ->
+      int.parse(x)
+      |> result.map(Backreference)
+      |> result.unwrap(Literal(x))
+      |> Ok
     Ok(_), "+" -> Ok(OneOrMore)
     Ok(_), "?" -> Ok(OneOrNone)
     Ok(_), "." -> Ok(Wildcard)

@@ -129,3 +129,10 @@ pub fn lex_capture_group_with_inner_group_test() {
   |> pprint.format
   |> birdie.snap("Lex first option with inner group in capture group")
 }
+
+pub fn lex_backreference_test() {
+  lexer.lex("(a|b) \\1")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex backreference")
+}

@@ -59,6 +59,7 @@ fn parse_token(grep: Grep, token: Token) -> Grep {
       list.map(alternatives, parse_grep)
       |> OneOf(grep)
     }
+    lexer.Backreference(_) -> todo
   }
 }
 

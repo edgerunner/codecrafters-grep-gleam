@@ -17,7 +17,7 @@ pub fn main() {
     ["-E", pattern, ..] -> {
       let grep = parser.parse(pattern)
       let marked_input = stx <> input_line <> etx
-      case match_pattern(marked_input, grep) {
+      case evaluator.run(marked_input, grep) {
         True -> exit(0)
         False -> exit(1)
       }
@@ -26,15 +26,6 @@ pub fn main() {
       io.println("Expected first argument to be '-E'")
       exit(1)
     }
-  }
-}
-
-fn match_pattern(input_line: String, grep: parser.Grep) -> Bool {
-  case evaluator.evaluate(input_line, grep), input_line {
-    Ok(_), _ -> True
-    Error(_), "" -> False
-    Error(True), _ -> False
-    Error(False), _ -> string.drop_left(input_line, 1) |> match_pattern(grep)
   }
 }
 

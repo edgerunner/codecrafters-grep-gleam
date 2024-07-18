@@ -14,8 +14,8 @@ pub fn asd_match_a_test() {
   match(string: "asd", pattern: "a")
 }
 
-pub fn bad_no_match_a_test() {
-  no_match(string: "bad", pattern: "a")
+pub fn bad_match_a_test() {
+  match(string: "bad", pattern: "a")
 }
 
 pub fn digit_2_match_test() {
@@ -54,14 +54,22 @@ pub fn capture_group_with_tail_test() {
   match(string: "tomcat", pattern: "(pussy|tom)cat")
 }
 
+pub fn backreference_match_test() {
+  match(string: "tintin", pattern: "(tin)\\1")
+}
+
+pub fn backreference_no_match_test() {
+  no_match(string: "tinder", pattern: "(tin)\\1")
+}
+
 fn match(string string, pattern pattern) {
   parser.parse(pattern)
-  |> evaluator.evaluate(string, _)
-  |> should.be_ok
+  |> evaluator.run(string, _)
+  |> should.be_true
 }
 
 fn no_match(string string, pattern pattern) {
   parser.parse(pattern)
-  |> evaluator.evaluate(string, _)
-  |> should.be_error
+  |> evaluator.run(string, _)
+  |> should.be_false
 }

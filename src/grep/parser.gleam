@@ -17,6 +17,8 @@ pub type Grep {
   Many(Grep, next: Grep)
   /// Match zero or one instance
   Maybe(Grep, next: Grep)
+  /// Match exactly what a previous capture group matched
+  Reference(Int, next: Grep)
 }
 
 /// Start-of-text control character
@@ -59,7 +61,7 @@ fn parse_token(grep: Grep, token: Token) -> Grep {
       list.map(alternatives, parse_grep)
       |> OneOf(grep)
     }
-    lexer.Backreference(_) -> todo
+    lexer.Backreference(number) -> Reference(number, grep)
   }
 }
 
@@ -71,6 +73,7 @@ fn reverse(grep: Grep, reversed: Grep) -> Grep {
     Not(grep, next) -> reverse(next, Not(grep, reversed))
     Many(grep, next) -> reverse(next, Many(grep, reversed))
     Maybe(grep, next) -> reverse(next, Maybe(grep, reversed))
+    Reference(grep, next) -> reverse(next, Reference(grep, reversed))
   }
 }
 
@@ -82,6 +85,7 @@ fn uncons(grep: Grep) -> #(Grep, Grep) {
     Not(x, next) -> #(Not(x, Match), next)
     Many(x, next) -> #(Many(x, Match), next)
     Maybe(x, next) -> #(Maybe(x, Match), next)
+    Reference(x, next) -> #(Reference(x, Match), next)
   }
 }
 

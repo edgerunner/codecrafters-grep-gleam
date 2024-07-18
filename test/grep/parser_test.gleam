@@ -79,3 +79,9 @@ pub fn parse_capture_group_test() {
   |> pprint.format
   |> birdie.snap("Parse capture group")
 }
+
+pub fn parse_backreference_test() {
+  parser.parse("(a|b)(c|d)\\2")
+  |> pprint.format
+  |> birdie.snap("Parse backreference")
+}

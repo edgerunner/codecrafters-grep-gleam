@@ -1,7 +1,7 @@
 import gleam/result
 import gleam/string
 import grep/parser.{
-  type Grep, Literal, Many, Match, Maybe, Not, OneOf, Reference,
+  type Grep, Capture, Literal, Many, Match, Maybe, Not, OneOf, Reference,
 }
 
 pub fn evaluate(string: String, pattern: Grep) -> Result(String, Bool) {
@@ -27,6 +27,8 @@ pub fn evaluate(string: String, pattern: Grep) -> Result(String, Bool) {
     Maybe(grep, next) -> maybe(string, grep) |> result.then(evaluate(_, next))
 
     Reference(number, next) -> todo
+
+    Capture(grep, number, next) -> todo
   }
 }
 

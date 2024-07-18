@@ -17,7 +17,10 @@ pub type Grep {
   Many(Grep, next: Grep)
   /// Match zero or one instance
   Maybe(Grep, next: Grep)
-  /// Match exactly what a previous capture group matched
+  /// Capture the pattern into a numbered group
+  /// that can be back-`Reference`d later
+  Capture(Grep, number: Int, next: Grep)
+  /// Match exactly what a previous `Capture` group matched
   Reference(Int, next: Grep)
 }
 
@@ -59,7 +62,8 @@ fn parse_token(grep: Grep, token: Token) -> Grep {
       Not(OneOf([Literal(stx, Match), Literal(etx, Match)], Match), grep)
     lexer.Capture(alternatives) -> {
       list.map(alternatives, parse_grep)
-      |> OneOf(grep)
+      |> OneOf(Match)
+      |> Capture(1, grep)
     }
     lexer.Backreference(number) -> Reference(number, grep)
   }
@@ -74,6 +78,8 @@ fn reverse(grep: Grep, reversed: Grep) -> Grep {
     Many(grep, next) -> reverse(next, Many(grep, reversed))
     Maybe(grep, next) -> reverse(next, Maybe(grep, reversed))
     Reference(grep, next) -> reverse(next, Reference(grep, reversed))
+    Capture(grep, number, next) ->
+      reverse(next, Capture(grep, number, reversed))
   }
 }
 
@@ -85,6 +91,7 @@ fn uncons(grep: Grep) -> #(Grep, Grep) {
     Not(x, next) -> #(Not(x, Match), next)
     Many(x, next) -> #(Many(x, Match), next)
     Maybe(x, next) -> #(Maybe(x, Match), next)
+    Capture(x, number, next) -> #(Capture(x, number, Match), next)
     Reference(x, next) -> #(Reference(x, Match), next)
   }
 }

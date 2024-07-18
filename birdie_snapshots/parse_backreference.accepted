@@ -4,16 +4,24 @@ title: Parse backreference
 file: ./test/grep/parser_test.gleam
 test_name: parse_backreference_test
 ---
-OneOf(
-  [
-    Literal("a", Match),
-    Literal("b", Match),
-  ],
+Capture(
   OneOf(
     [
-      Literal("c", Match),
-      Literal("d", Match),
+      Literal("a", Match),
+      Literal("b", Match),
     ],
+    Match,
+  ),
+  1,
+  Capture(
+    OneOf(
+      [
+        Literal("c", Match),
+        Literal("d", Match),
+      ],
+      Match,
+    ),
+    1,
     Reference(2, Match),
   ),
 )

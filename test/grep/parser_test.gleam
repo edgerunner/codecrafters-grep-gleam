@@ -91,3 +91,9 @@ pub fn parse_complex_backreference_test() {
   |> pprint.format
   |> birdie.snap("Parse complex backreference")
 }
+
+pub fn parse_captured_complex_contents_test() {
+  parser.parse("([abcd]+) is \\1, not [^xyz]+")
+  |> pprint.format
+  |> birdie.snap("Parse captured complex contents")
+}

@@ -1,0 +1,88 @@
+---
+version: 1.1.7
+title: Parse captured complex contents
+file: ./test/grep/parser_test.gleam
+test_name: parse_captured_complex_contents_test
+---
+Capture(
+  OneOf(
+    [
+      Many(
+        OneOf(
+          [
+            Literal("d", Match),
+            Literal("c", Match),
+            Literal("b", Match),
+            Literal("a", Match),
+          ],
+          Match,
+        ),
+        Match,
+      ),
+    ],
+    Match,
+  ),
+  1,
+  Literal(
+    " ",
+    Literal(
+      "i",
+      Literal(
+        "s",
+        Literal(
+          " ",
+          Reference(
+            1,
+            Literal(
+              ",",
+              Literal(
+                " ",
+                Literal(
+                  "n",
+                  Literal(
+                    "o",
+                    Literal(
+                      "t",
+                      Literal(
+                        " ",
+                        Maybe(
+                          Literal(
+                            "",
+                            Match,
+                          ),
+                          Many(
+                            Not(
+                              OneOf(
+                                [
+                                  Literal(
+                                    "z",
+                                    Match,
+                                  ),
+                                  Literal(
+                                    "y",
+                                    Match,
+                                  ),
+                                  Literal(
+                                    "x",
+                                    Match,
+                                  ),
+                                ],
+                                Match,
+                              ),
+                              Match,
+                            ),
+                            Match,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+)

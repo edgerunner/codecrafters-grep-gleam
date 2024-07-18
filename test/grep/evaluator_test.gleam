@@ -42,6 +42,10 @@ pub fn word_star_no_match_test() {
   no_match(string: "*", pattern: "\\w")
 }
 
+pub fn negative_character_group_no_match_test() {
+  no_match(string: "\u{2}banana\u{3}", pattern: "[^anb]")
+}
+
 pub fn capture_group_test() {
   match(string: "catastrophe", pattern: "(dog|cat|mouse)")
 }
@@ -67,6 +71,14 @@ pub fn complex_backreference_match_test() {
   match(
     string: "grep 101 is doing grep 101 times",
     pattern: "(\\w\\w\\w\\w \\d\\d\\d) is doing \\1 times",
+  )
+}
+
+/// this is from a failed codecrafters test
+pub fn complex_capture_match_test() {
+  match(
+    string: "abcd is abcd, not efg",
+    pattern: "([abcd]+) is \\1, not [^xyz]+",
   )
 }
 

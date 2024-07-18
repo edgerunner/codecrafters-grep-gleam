@@ -1,7 +1,6 @@
 import argv
 import gleam/erlang
 import gleam/io
-import gleam/string
 import grep/evaluator
 import grep/parser
 

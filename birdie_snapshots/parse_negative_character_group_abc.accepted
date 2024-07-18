@@ -4,14 +4,17 @@ title: Parse negative character group abc
 file: ./test/grep/parser_test.gleam
 test_name: parse_negative_character_group_abc_test
 ---
-Not(
-  OneOf(
-    [
-      Literal("c", Match),
-      Literal("b", Match),
-      Literal("a", Match),
-    ],
+Maybe(
+  Literal("", Match),
+  Not(
+    OneOf(
+      [
+        Literal("c", Match),
+        Literal("b", Match),
+        Literal("a", Match),
+      ],
+      Match,
+    ),
     Match,
   ),
-  Match,
 )

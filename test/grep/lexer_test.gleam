@@ -143,3 +143,13 @@ pub fn lex_complex_backreference_test() {
   |> pprint.format
   |> birdie.snap("Lex complex backreference")
 }
+
+pub fn lex_captured_complex_contents_test() {
+  let assert Ok(lexer.Capture([first, ..])) =
+    lexer.lex("([abcd]+) is \\1, not [^xyz]+")
+    |> iterator.first
+
+  iterator.to_list(first)
+  |> pprint.format
+  |> birdie.snap("Lex captured complex contents")
+}

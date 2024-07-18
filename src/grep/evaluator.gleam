@@ -29,12 +29,6 @@ fn evaluate(
       one_of(string, greps, capture) |> result.then(evaluate(_, next, capture))
     }
 
-    Not(grep, Match) ->
-      case not(string, grep, capture) {
-        Error(e) -> Error(e)
-        Ok("") -> Ok("")
-        Ok(_) -> Error(False)
-      }
     Not(grep, next) ->
       not(string, grep, capture) |> result.then(evaluate(_, next, capture))
 
@@ -86,7 +80,8 @@ fn one_of(
 fn not(string: String, grep: Grep, capture: Capture) -> Result(String, Bool) {
   case evaluate(string, grep, capture) {
     Ok(_) -> Error(True)
-    Error(_) -> string |> string.drop_left(1) |> Ok
+    Error(False) -> string |> string.drop_left(1) |> Ok
+    Error(True) -> Error(True)
   }
 }
 
@@ -96,6 +91,7 @@ fn many(string: String, grep: Grep, capture: Capture) -> Result(String, Bool) {
 
 fn any(string: String, grep: Grep, capture: Capture) -> Result(String, Bool) {
   case evaluate(string, grep, capture) {
+    Ok("") -> Ok("")
     Ok(remaining) -> any(remaining, grep, capture)
     Error(_) -> Ok(string)
   }

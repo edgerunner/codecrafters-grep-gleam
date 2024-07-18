@@ -3,6 +3,7 @@ import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/string
 import grep/lexer.{type Token}
+import qmatic
 
 pub type Grep {
   /// This is the end of a chain. If you reach this, you have a match
@@ -31,15 +32,18 @@ const stx = "\u{2}"
 const etx = "\u{3}"
 
 pub fn parse(source: String) -> Grep {
-  lexer.lex(source) |> parse_grep
+  let qmatic = qmatic.start()
+  lexer.lex(source) |> parse_grep(qmatic)
 }
 
-fn parse_grep(tokens: Iterator(Token)) {
-  iterator.fold(over: tokens, from: Match, with: parse_token)
+fn parse_grep(tokens: Iterator(Token), qmatic: qmatic.Subject) {
+  iterator.fold(over: tokens, from: Match, with: fn(grep, token) {
+    parse_token(grep, token, qmatic)
+  })
   |> reverse(Match)
 }
 
-fn parse_token(grep: Grep, token: Token) -> Grep {
+fn parse_token(grep: Grep, token: Token, qmatic: qmatic.Subject) -> Grep {
   case token {
     lexer.Literal(s) -> Literal(s, grep)
     lexer.Digit -> digit(grep)
@@ -61,9 +65,10 @@ fn parse_token(grep: Grep, token: Token) -> Grep {
     lexer.Wildcard ->
       Not(OneOf([Literal(stx, Match), Literal(etx, Match)], Match), grep)
     lexer.Capture(alternatives) -> {
-      list.map(alternatives, parse_grep)
+      let number = qmatic.next(qmatic)
+      list.map(alternatives, parse_grep(_, qmatic))
       |> OneOf(Match)
-      |> Capture(1, grep)
+      |> Capture(number, grep)
     }
     lexer.Backreference(number) -> Reference(number, grep)
   }

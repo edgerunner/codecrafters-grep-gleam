@@ -153,3 +153,10 @@ pub fn lex_captured_complex_contents_test() {
   |> pprint.format
   |> birdie.snap("Lex captured complex contents")
 }
+
+pub fn lex_nested_captures_test() {
+  lexer.lex("('(cat) and \\2') is the same as \\1")
+  |> iterator.to_list
+  |> pprint.format
+  |> birdie.snap("Lex nested captures")
+}

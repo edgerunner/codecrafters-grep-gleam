@@ -1,0 +1,26 @@
+---
+version: 1.1.7
+title: Lex nested captures
+file: ./test/grep/lexer_test.gleam
+test_name: lex_nested_captures_test
+---
+[
+  Capture([Iterator(//fn() { ... })]),
+  Literal(" "),
+  Literal("i"),
+  Literal("s"),
+  Literal(" "),
+  Literal("t"),
+  Literal("h"),
+  Literal("e"),
+  Literal(" "),
+  Literal("s"),
+  Literal("a"),
+  Literal("m"),
+  Literal("e"),
+  Literal(" "),
+  Literal("a"),
+  Literal("s"),
+  Literal(" "),
+  Backreference(1),
+]

@@ -23,7 +23,7 @@ type Scaffold {
   Start
   Escape
   GroupScaffold(characters: List(String), negative: Bool)
-  CaptureScaffold(List(Iterator(String)))
+  CaptureScaffold(List(Iterator(String)), depth: Int)
 }
 
 pub fn lex(source: String) -> Iterator(Token) {
@@ -60,22 +60,29 @@ fn lex_single_grapheme(
     Ok(_), "+" -> Ok(OneOrMore)
     Ok(_), "?" -> Ok(OneOrNone)
     Ok(_), "." -> Ok(Wildcard)
-    _, "$" -> Ok(EndAnchor)
+    Ok(_), "$" -> Ok(EndAnchor)
     Error(Start), "^" -> Ok(StartAnchor)
-    _, "(" -> Error(CaptureScaffold([iterator.empty()]))
-    Error(GroupScaffold([], False)), "^" -> Error(GroupScaffold([], True))
-    Error(CaptureScaffold(alternatives)), "|" ->
-      Error(CaptureScaffold([iterator.empty(), ..alternatives]))
-    Error(CaptureScaffold(alternatives)), ")" ->
-      list.reverse(alternatives) |> list.map(lex_graphemes) |> Capture |> Ok
-    Error(CaptureScaffold([alternative, ..others])), c -> {
-      iterator.single(c)
-      |> iterator.append(to: alternative, suffix: _)
-      |> list.prepend(others, _)
-      |> CaptureScaffold
+    Error(Start), "(" | Ok(_), "(" ->
+      Error(CaptureScaffold([iterator.empty()], 0))
+    Error(CaptureScaffold(scaffold, depth)), "(" ->
+      append_to(scaffold, "(")
+      |> CaptureScaffold(depth + 1)
+      |> Error
+    Error(CaptureScaffold(scaffold, 0)), "|" ->
+      Error(CaptureScaffold([iterator.empty(), ..scaffold], 0))
+    Error(CaptureScaffold(scaffold, 0)), ")" ->
+      list.reverse(scaffold) |> list.map(lex_graphemes) |> Capture |> Ok
+    Error(CaptureScaffold(scaffold, depth)), ")" ->
+      append_to(scaffold, ")")
+      |> CaptureScaffold(depth - 1)
+      |> Error
+    Error(CaptureScaffold(scaffold, depth)), c -> {
+      append_to(scaffold, c)
+      |> CaptureScaffold(depth)
       |> Error
     }
     _, "[" -> Error(GroupScaffold(characters: [], negative: False))
+    Error(GroupScaffold([], False)), "^" -> Error(GroupScaffold([], True))
     Error(GroupScaffold(characters, False)), "]" ->
       Ok(PositiveCharacterGroup(characters))
     Error(GroupScaffold(characters, True)), "]" ->
@@ -84,4 +91,14 @@ fn lex_single_grapheme(
       [c, ..characters] |> GroupScaffold(negative) |> Error
     _, _ -> Ok(Literal(grapheme))
   }
+}
+
+fn append_to(
+  scaffold: List(Iterator(String)),
+  grapheme: String,
+) -> List(Iterator(String)) {
+  let assert [alternative, ..others] = scaffold
+  iterator.single(grapheme)
+  |> iterator.append(to: alternative, suffix: _)
+  |> list.prepend(others, _)
 }

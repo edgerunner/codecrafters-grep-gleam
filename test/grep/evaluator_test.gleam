@@ -82,6 +82,14 @@ pub fn complex_capture_match_test() {
   )
 }
 
+/// this is from a failed codecrafters test
+pub fn nested_backreferences_test() {
+  match(
+    string: "'cat and cat' is the same as 'cat and cat'",
+    pattern: "('(cat) and \\2') is the same as \\1",
+  )
+}
+
 fn match(string string, pattern pattern) {
   parser.parse(pattern)
   |> evaluator.run(string, _)

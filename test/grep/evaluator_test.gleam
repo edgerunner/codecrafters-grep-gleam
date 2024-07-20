@@ -90,6 +90,14 @@ pub fn nested_backreferences_test() {
   )
 }
 
+/// this is from a failed codecrafters test
+pub fn double_nested_backreferences_test() {
+  match(
+    string: "abc-def is abc-def, not efg, abc, or def",
+    pattern: "(([abc]+)-([def]+)) is \\1, not ([^xyz]+), \\2, or \\3",
+  )
+}
+
 fn match(string string, pattern pattern) {
   parser.parse(pattern)
   |> evaluator.run(string, _)

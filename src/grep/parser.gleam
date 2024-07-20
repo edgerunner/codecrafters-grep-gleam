@@ -51,8 +51,8 @@ fn parse_token(grep: Grep, token: Token, qmatic: qmatic.Subject) -> Grep {
     lexer.PositiveCharacterGroup(characters) ->
       character_group(characters, grep)
     lexer.NegativeCharacterGroup(characters) ->
-      character_group(characters, Match)
-      |> Not(Maybe(Literal(stx, Match), grep))
+      character_group([stx, etx, ..characters], Match)
+      |> Not(grep)
     lexer.StartAnchor -> Literal(stx, grep)
     lexer.EndAnchor -> Literal(etx, grep)
     lexer.OneOrMore -> {

@@ -45,34 +45,36 @@ Capture(
                       "t",
                       Literal(
                         " ",
-                        Maybe(
-                          Literal(
-                            "",
-                            Match,
-                          ),
-                          Many(
-                            Not(
-                              OneOf(
-                                [
-                                  Literal(
-                                    "z",
-                                    Match,
-                                  ),
-                                  Literal(
-                                    "y",
-                                    Match,
-                                  ),
-                                  Literal(
-                                    "x",
-                                    Match,
-                                  ),
-                                ],
-                                Match,
-                              ),
+                        Many(
+                          Not(
+                            OneOf(
+                              [
+                                Literal(
+                                  "",
+                                  Match,
+                                ),
+                                Literal(
+                                  "",
+                                  Match,
+                                ),
+                                Literal(
+                                  "z",
+                                  Match,
+                                ),
+                                Literal(
+                                  "y",
+                                  Match,
+                                ),
+                                Literal(
+                                  "x",
+                                  Match,
+                                ),
+                              ],
                               Match,
                             ),
                             Match,
                           ),
+                          Match,
                         ),
                       ),
                     ),
